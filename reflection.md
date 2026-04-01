@@ -2,6 +2,11 @@
 
 ## 1. System Design
 
+### 3 Core Actions
+- Add a pet
+- Add task for each pet (feed, meds, etc.)
+- Set priority (High, Medium, Low)
+
 **a. Initial design**
 
 - Briefly describe your initial UML design.
