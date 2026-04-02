@@ -1,6 +1,12 @@
 import streamlit as st
+from pawpal_system import *
+
+
 
 st.set_page_config(page_title="PawPal+", page_icon="🐾", layout="centered")
+
+if "owner" not in st.session_state:
+    st.session_state.owner = Owner(1, "Stuart")
 
 st.title("🐾 PawPal+")
 
@@ -58,13 +64,17 @@ with col3:
     priority = st.selectbox("Priority", ["low", "medium", "high"], index=2)
 
 if st.button("Add task"):
-    st.session_state.tasks.append(
-        {"title": task_title, "duration_minutes": int(duration), "priority": priority}
+    task = Task(
+        id=len(st.session_state.tasks) + 1,
+        name=task_title,
+        priority=Priority[priority.upper()],
+        duration=int(duration),
     )
+    st.session_state.tasks.append(task)
 
 if st.session_state.tasks:
     st.write("Current tasks:")
-    st.table(st.session_state.tasks)
+    st.table([{"name": t.name, "duration": t.duration, "priority": t.priority.name} for t in st.session_state.tasks])
 else:
     st.info("No tasks yet. Add one above.")
 
@@ -74,15 +84,16 @@ st.subheader("Build Schedule")
 st.caption("This button should call your scheduling logic once you implement it.")
 
 if st.button("Generate schedule"):
-    st.warning(
-        "Not implemented yet. Next step: create your scheduling logic (classes/functions) and call it here."
-    )
-    st.markdown(
-        """
-Suggested approach:
-1. Design your UML (draft).
-2. Create class stubs (no logic).
-3. Implement scheduling behavior.
-4. Connect your scheduler here and display results.
-"""
-    )
+    pet = Pet(1, pet_name, species, owner=st.session_state.owner)
+
+    for task in st.session_state.tasks:
+        task.pet = pet
+        pet.tasks.append(task)
+    
+    st.session_state.owner.add_pet(pet)
+
+    scheduler = Scheduler()
+    scheduler.load_from_owner(st.session_state.owner)
+    scheduler.generate_schedule()
+
+    st.text(scheduler.explain_schedule())
