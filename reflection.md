@@ -9,13 +9,24 @@
 
 **a. Initial design**
 
-- Briefly describe your initial UML design.
-- What classes did you include, and what responsibilities did you assign to each?
+4 classes: `Pet`, `Owner`, `Task`, and `Scheduler`.
+
+| Class | Responsibility |
+|-------|---------------|
+| `Pet` | Stores name, species, and owner reference |
+| `Owner` | Holds a list of pets; entry point for adding them |
+| `Task` | Represents one care activity with a priority and duration; linked to a pet |
+| `Scheduler` | Takes the task list and produces an ordered daily plan with explanations |
 
 **b. Design changes**
 
-- Did your design change during implementation?
-- If yes, describe at least one change and why you made it.
+Several changes were made after reviewing the initial design:
+
+- `addPet()` / `removePet()` moved from `Pet` to `Owner` — a pet shouldn't manage itself
+- `Owner` gained a `tasks` list and `addTask()` method to represent the missing owner→task relationship
+- `Pet` gained a `tasks` list so the pet→task relationship is bidirectional
+- `Task.priority` changed from a plain `str` to a `Priority` enum to prevent invalid values
+- `Scheduler` gained a `total_minutes` field (default 480) so it can enforce a time budget
 
 ---
 
